@@ -1,0 +1,9 @@
+[package]
+name = "datalints"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ahash = "0.8.11"
+compact_str = { version = "0.9.0", features = ["proptest", "serde"] }
+derive_more = { version = "2.0.1", features = ["full"] }
