@@ -7,29 +7,28 @@ fn main() {
 }
 
 #[derive(Debug, Clone, derive_more::Display, derive_more::DerefMut, derive_more::Deref)]
-pub struct DataString(CompactString);
+struct DataString(CompactString);
 
-pub type Metadata = AHashMap<&'static str, Box<dyn Any>>;
+type Metadata = AHashMap<&'static str, Box<dyn Any>>;
 
 #[derive(Debug)]
-pub struct Document {
+struct Document {
     text: DataString,
     metadata: Metadata,
 }
 
-pub enum DatasetFileType {
+enum DatasetFileType {
     JSON,
     JSONL,
     TXT,
 }
 
-pub struct FileDataset<I>
+struct FileDataset<I>
 where
-    I: Iterator,
+    I: Iterator<Item = &'static [u8]>,
 {
     handle: File,
     filetype: DatasetFileType,
     iter: Option<I>,
 }
-
 
