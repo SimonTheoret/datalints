@@ -5,5 +5,7 @@ edition = "2024"
 
 [dependencies]
 ahash = "0.8.11"
+arrow = { version = "55.0.0", features = ["json", "csv"] }
 compact_str = { version = "0.9.0", features = ["proptest", "serde"] }
 derive_more = { version = "2.0.1", features = ["full"] }
+parquet = "55.0.0"
