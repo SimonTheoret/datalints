@@ -1,4 +1,9 @@
-use std::{fs::File, io::BufReader, path::{Path, PathBuf}, ffi::OsStr};
+use std::{
+    ffi::OsStr,
+    fs::File,
+    io::BufReader,
+    path::{Path, PathBuf},
+};
 
 use arrow::json::Reader;
 use arrow_csv::reader::infer_schema_from_files;
@@ -13,7 +18,16 @@ fn get_jsonl_iter<P: AsRef<Path>>(
     ReaderBuilder::new(std::sync::Arc::new(schema)).build(reader)
 }
 
-fn get_csv_iter(path: String) -> Result<(), arrow::error::ArrowError> {
-    
-    let schema = infer_schema_from_files(&[path], delimiter, max_read_records, has_header)
+fn get_csv_iter<P: AsRef<Path>>(path: P) -> Result<(), arrow::error::ArrowError> {
+    let delimiter = match path.as_ref().extension(){
+        
+    }
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn test_build_jsonl_iter() {
+        todo!();
+    }
 }
