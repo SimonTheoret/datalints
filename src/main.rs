@@ -1,5 +1,5 @@
-use std::any::Any;
 use ahash::HashMap;
+use std::any::Any;
 
 mod reader;
 
@@ -7,8 +7,8 @@ fn main() {
     println!("Hello, world!");
 }
 
-pub struct Document<T> {
-    inner: T,
+pub struct Document {
+    text: String,
     data: HashMap<String, Box<dyn Any>>,
 }
 
