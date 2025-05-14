@@ -20,10 +20,10 @@ use arrow_csv::reader::Format;
 
 #[derive(derive_more::FromStr)]
 pub enum DatasetFormat {
-    Jsonl,
-    Csv,
-    Txt,
-    Parquet,
+    JsonlFormat,
+    CsvFormat,
+    TxtFormat,
+    ParquetFormat,
 }
 
 #[derive(Error, Debug)]
@@ -35,10 +35,10 @@ impl TryFrom<&OsStr> for DatasetFormat {
     fn try_from(value: &OsStr) -> Result<Self, Self::Error> {
         match &value.to_owned().to_ascii_lowercase().to_str() {
             Some(s) => match *s {
-                "jsonl" | "json" => Ok(DatasetFormat::Jsonl),
-                "csv" => Ok(DatasetFormat::Csv),
-                "txt" => Ok(DatasetFormat::Txt),
-                "parquet" => Ok(DatasetFormat::Parquet),
+                "jsonl" | "json" => Ok(DatasetFormat::JsonlFormat),
+                "csv" => Ok(DatasetFormat::CsvFormat),
+                "txt" => Ok(DatasetFormat::TxtFormat),
+                "parquet" => Ok(DatasetFormat::ParquetFormat),
                 _ => Err(ExtensionParsingError(value.to_owned())),
             },
             None => Err(ExtensionParsingError(value.to_owned())),
@@ -58,9 +58,9 @@ impl DatasetFormat {
         csv_has_header: Option<bool>,
     ) -> Result<(DatasetReader<P>, Option<Schema>)> {
         let file = File::open(path.as_ref())?;
-        let num_record_to_read = schema_num_lines.unwrap_or_else(|| Self::DEFAULT_NUM_LINES);
+        let num_record_to_read = schema_num_lines.unwrap_or(Self::DEFAULT_NUM_LINES);
         match self {
-            Self::Jsonl => {
+            Self::JsonlFormat => {
                 let mut reader = BufReader::new(file);
                 let (schema, _) = arrow_json::reader::infer_json_schema_from_seekable(
                     &mut reader,
@@ -81,7 +81,7 @@ impl DatasetFormat {
                     Some(schema),
                 ))
             }
-            Self::Csv => {
+            Self::CsvFormat => {
                 let reader = BufReader::new(file);
                 let format = Format::default().with_header(csv_has_header.unwrap());
                 let copied_reader = BufReader::new(File::open(path.as_ref())?);
@@ -101,7 +101,7 @@ impl DatasetFormat {
                     Some(schema),
                 ))
             }
-            Self::Txt => {
+            Self::TxtFormat => {
                 let reader = BufReader::new(file);
                 let lines_iter = reader.lines();
                 let lines_iter = lines_iter.skip(skip_n_record);
@@ -114,7 +114,7 @@ impl DatasetFormat {
                 };
                 Ok((dr, None))
             }
-            Self::Parquet => {
+            Self::ParquetFormat => {
                 let iter = parquet::file::serialized_reader::SerializedFileReader::new(file)?
                     .into_iter()
                     .with_batch_size(1);
@@ -302,7 +302,6 @@ impl<P: AsRef<Path> + Clone> Iterator for DatasetReader<P> {
                 max_n_records,
                 current_count,
             } => {
-                *current_count += 1;
                 let current = iter.next();
                 if let Some(res) = current {
                     match res {
@@ -338,7 +337,7 @@ mod test {
     #[test]
     fn test_build_csv_iter() {
         let path = "./tests/test_data/csv_test.csv";
-        let format = DatasetFormat::Csv;
+        let format = DatasetFormat::CsvFormat;
         let iter = format
             .build(path, 0, Some(100), Some(100), Some(4), Some(true))
             .unwrap()
@@ -351,7 +350,7 @@ mod test {
     #[test]
     fn test_build_txt_iter() {
         let path = "./tests/test_data/txt_test.txt";
-        let format = DatasetFormat::Txt;
+        let format = DatasetFormat::TxtFormat;
         let iter = format
             .build(path, 0, Some(100), Some(100), Some(4), Some(true))
             .unwrap()
