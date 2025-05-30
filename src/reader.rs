@@ -83,6 +83,9 @@ impl DatasetFormat {
             }
             Self::CsvFormat => {
                 let reader = BufReader::new(file);
+                let mut csv_reader = csv::Reader::from_reader(reader);
+                csv_reader.deserialize()
+
                 let format = Format::default().with_header(csv_has_header.unwrap());
                 let copied_reader = BufReader::new(File::open(path.as_ref())?);
                 let (schema, _) = format.infer_schema(copied_reader, Some(num_record_to_read))?;
