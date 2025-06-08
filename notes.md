@@ -1,0 +1,6 @@
+- ~Impl default trait for Dataset type~
+- ~Refactor expected type inside DatasetReaderBuilder~
+- ~Add more info to the error msg inside DatasetReaderBuilder~
+- ~Clean up the unraps in DatasetReaderBuilder `build` function~
+- ~Refactor build to encapsulate all the self.arg and path logic~
+- ~Refactor the build function JSONL and JSON impl. Make it into a single impl~
