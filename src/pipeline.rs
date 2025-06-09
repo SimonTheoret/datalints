@@ -1,7 +1,8 @@
 /*
  PIPELINE
 
-To design a high-performance internal pipeline for your Rust data linter, we need to consider concurrency, modularity, and efficiency. Here's a step-by-step plan:
+To design a high-performance internal pipeline for your Rust data linter, we need to consider
+concurrency, modularity, and efficiency. Here's a step-by-step plan:
 
 1. Define traits for linting steps that can be implemented independently.
 2. Use channels and async runtime to allow concurrent processing of streaming data.

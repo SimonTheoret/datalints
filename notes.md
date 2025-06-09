@@ -4,3 +4,5 @@
 - ~Clean up the unraps in DatasetReaderBuilder `build` function~
 - ~Refactor build to encapsulate all the self.arg and path logic~
 - ~Refactor the build function JSONL and JSON impl. Make it into a single impl~
+- ~Clean up all the lints~
+- Add a bit of documentation around the reader
