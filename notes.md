@@ -6,3 +6,12 @@
 - ~Refactor the build function JSONL and JSON impl. Make it into a single impl~
 - ~Clean up all the lints~
 - Add a bit of documentation around the reader
+- ~Test Document::from(record_batch)~
+- Refactor `build` for jsonl
+  - create independant fonction for normalizing a schema
+- ~Test queryable trait for document~
+  - ~Refactor some match content into dedicated functions~
+  - Create a Trait around the Linters, with information about the query type
+- Add documentation to NumberAstringLlinter and associated functions
+- ~Move NumberAstringLlinter into its own module (file)~
+- 

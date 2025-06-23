@@ -74,16 +74,24 @@ impl DatasetType {
     }
 }
 
+/// Wrapper type around a RecordBatch. The only real difference between the two types are that the
+/// NormalizedRecordBatch has been normalized first.
+#[derive(Debug, derive_more::Deref, derive_more::DerefMut)]
+pub struct NormalizedRecordBatch(pub arrow::array::RecordBatch);
+
 #[derive(Debug)]
 pub enum DatasetReaderIter {
     Jsonl(Reader<BufReader<Cursor<BoxedMmap>>>),
 }
 
 impl Iterator for DatasetReaderIter {
-    type Item = Result<arrow::array::RecordBatch>;
+    type Item = Result<NormalizedRecordBatch>;
     fn next(&mut self) -> Option<Self::Item> {
         match self {
-            Self::Jsonl(iter) => iter.next().map(|r| r.map_err(|e| eyre!(e))),
+            Self::Jsonl(iter) => iter.next().map(|r| match r {
+                Ok(rb) => Ok(NormalizedRecordBatch(rb)),
+                Err(e) => Err(eyre!(e)),
+            }),
         }
     }
 }
@@ -97,6 +105,7 @@ where
     path: P,
     arg: Option<String>,
 }
+
 impl<P> DatasetReaderBuilder<P>
 where
     P: AsRef<Path>,

@@ -466,7 +466,9 @@ version = "0.1.0"
 dependencies = [
  "ahash",
  "arrow",
+ "arrow-buffer",
  "arrow-json",
+ "arrow-schema",
  "compact_str",
  "csv",
  "derive_more",
@@ -479,6 +481,7 @@ dependencies = [
  "parameterized",
  "parquet",
  "pretty_assertions",
+ "regex",
  "serde",
  "tempfile",
  "thiserror",

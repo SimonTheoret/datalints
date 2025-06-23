@@ -3,8 +3,8 @@
 Most of the data linters are taken from http://learningsys.org/nips17/assets/papers/paper_19.pdf.
 
 ## Miscoding data linters
-Identify data that should be transformed to improve the likelihood
-that a model can learn from the data.
+Identify data that should be transformed to improve the likelihood that a model can learn from the
+data.
 
 * Number as string: A number is encoded as a string. Consider whether it should be represented as a number.
 
@@ -46,60 +46,42 @@ Identify likely outliers and scaling issues in data.
 
  */
 
-// PROTOTYPE
+use crate::document::{Document, QueryType, Queryable};
+use arrow::array::Array;
+use std::{ops::Add, sync::Arc};
 
-use arrow::{
-    array::{RecordBatch, StringArray, StringArrayType},
-    datatypes::Schema,
-};
-use eyre::Result;
+mod enum_as_float;
+mod number_as_string;
 
-// PROTOTYPE
-pub enum ArrayType {}
+pub trait StreamingLinter {
+    const QUERY_TYPE: QueryType = QueryType::StringArray;
 
-/// PORS
-/// We should reuse the vecs, and only switch the record_batch when creating a new Doc.
-pub struct Document {
-    record_batch: RecordBatch,
-    iint_type_columns: Vec<(usize, ArrayType)>,
-    uint_type_columns: Vec<(usize, ArrayType)>,
-    /// Includes the Decimal128 and Decimal256 types.
-    float_type_columns: Vec<(usize, ArrayType)>,
-    timestamp_type_columns: Vec<(usize, ArrayType)>,
-    date_type_columns: Vec<(usize, ArrayType)>,
-    time_type_columns: Vec<(usize, ArrayType)>,
-    duration_type_columns: Vec<(usize, ArrayType)>,
-    interval_type_columns: Vec<(usize, ArrayType)>,
-    utf8_type_columns: Vec<(usize, ArrayType)>,
-    boolean_type_columns: Vec<(usize, ArrayType)>,
-    binary_type_columns: Vec<(usize, ArrayType)>,
+    fn lint(&mut self, doc: &Document) -> Option<Lints>;
+
+    fn get_arrays<'a>(&self, doc: &'a Document) -> Vec<&'a Arc<dyn Array>> {
+        doc.query(Self::QUERY_TYPE)
+    }
 }
 
-impl Document {
-    // ///Expects a normalized schema
-    // fn new(record_batch: RecordBatch, normalized_schema: Schema) -> Self {
-    //
-    // }
+pub trait AggregateLinter {
+    const QUERY_TYPE: QueryType = QueryType::StringArray;
+
+    fn aggregate(&mut self, doc: &Document);
+
+    fn lint(self) -> Option<Lints>;
+
+    fn get_arrays<'a>(&self, doc: &'a Document) -> Vec<&'a Arc<dyn Array>> {
+        doc.query(Self::QUERY_TYPE)
+    }
 }
 
-// PROTOTYPE
-pub trait Linter {
-    fn lint(&mut self, doc: &Document) -> Result<()>;
+#[derive(Debug, Default, derive_more::Deref, derive_more::DerefMut)]
+pub struct Lints {
+    lint: Vec<String>,
 }
 
-/// Detects if a number is represented as a string
-pub struct NumberAsStringLinter {
-    /// Change this field into a struct. This struct will probably initialize itself with only
-    /// negative integers to mark empty places in its array.
-    exemples_index: [isize; 3],
-}
-
-// PROTOTYPE
-impl NumberAsStringLinter {
-    fn lint(&mut self, doc: &Document) {
-        for col_idx in doc.utf8_type_columns.iter() {
-            let col = doc.record_batch.column(*col_idx);
-            let col_utf8 = col.as_any().downcast_ref::<&dyn StringArrayType>();
-        }
+impl PartialEq<Vec<String>> for Lints {
+    fn eq(&self, other: &Vec<String>) -> bool {
+        self.lint.eq(other)
     }
 }
