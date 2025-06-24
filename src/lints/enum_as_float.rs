@@ -9,7 +9,7 @@ use arrow::{
 };
 
 use crate::document::Document;
-use crate::lints::{Lints, QueryType, StreamingLinter};
+use crate::lints::{Lints, QueryType};
 
 use super::AggregateLinter;
 
@@ -18,8 +18,6 @@ type EnumThreshold = u16;
 pub struct EnumAsFloatLinter {
     /// How many examples we've seen.
     nbr_exemples_seen: usize,
-    /// How many positives examples must we collect, at most.
-    max_number_of_positives: usize,
     /// How many different floats  must be seen before treating them as if they were not enum.
     enum_categories_threshold: EnumThreshold,
     /// List of counters. Each counter is associated with a single column. Each FloatCounter has a
@@ -125,7 +123,6 @@ impl EnumAsFloatLinter {
         let completed: Vec<_> = vec![false; counters.len()];
         Self {
             nbr_exemples_seen: 0,
-            max_number_of_positives: 10,
             enum_categories_threshold: 10,
             counters,
             completed,
@@ -176,14 +173,16 @@ impl AggregateLinter for EnumAsFloatLinter {
             if self.column_is_completed(field_name) {
                 continue;
             }
-            match arr.data_type() {
+            let array_len = match arr.data_type() {
                 DataType::Float32 => {
                     let arr_float: &Float32Array = arr.as_primitive();
                     self.insert_array_values(arr_float.iter(), field_name);
+                    arr_float.len()
                 }
                 DataType::Float64 => {
                     let arr_float: &Float64Array = arr.as_primitive();
                     self.insert_array_values(arr_float.iter(), field_name);
+                    arr_float.len()
                 }
                 DataType::Float16 => {
                     let arr_float_dyn = arrow::compute::cast_with_options(
@@ -194,6 +193,7 @@ impl AggregateLinter for EnumAsFloatLinter {
                     .unwrap();
                     let arr_float: &Float32Array = arr_float_dyn.as_primitive();
                     self.insert_array_values(arr_float.iter(), field_name);
+                    arr_float.len()
                 }
                 DataType::Decimal128(_, _) => {
                     let arr_float_dyn = arrow::compute::cast_with_options(
@@ -204,6 +204,7 @@ impl AggregateLinter for EnumAsFloatLinter {
                     .unwrap();
                     let arr_float: &Float32Array = arr_float_dyn.as_primitive();
                     self.insert_array_values(arr_float.iter(), field_name);
+                    arr_float.len()
                 }
                 DataType::Decimal256(_, _) => {
                     let arr_float_dyn = arrow::compute::cast_with_options(
@@ -214,9 +215,11 @@ impl AggregateLinter for EnumAsFloatLinter {
                     .unwrap();
                     let arr_float: &Float32Array = arr_float_dyn.as_primitive();
                     self.insert_array_values(arr_float.iter(), field_name);
+                    arr_float.len()
                 }
                 _ => unreachable!(),
-            }
+            };
+            self.nbr_exemples_seen += array_len
         }
     }
 }
