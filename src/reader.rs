@@ -97,6 +97,8 @@ impl Iterator for DatasetReaderIter {
     }
 }
 
+/// This is only used when there is an error and we need to know the supported types of dataset. It
+/// is also used during testing.
 const SUPPORTED_DATASET_TYPES: [&str; 2] = ["Jsonl", "Json"];
 
 pub struct DatasetReaderBuilder<P>
@@ -115,6 +117,8 @@ where
         Self { path, arg: None }
     }
 
+    /// This function is used to normalize the schema. It should be the same function no matter the
+    /// dataset type.
     fn normalize_schema(schema: Schema) -> Result<Arc<Schema>> {
         let schema = Arc::new(
             schema
@@ -124,6 +128,7 @@ where
         Ok(schema)
     }
 
+    /// Build the mmap from a given path.
     fn build_mmap(path: &Path) -> Result<Box<Mmap>> {
         let path_ref = path;
         let file = File::open(path_ref)
