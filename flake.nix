@@ -20,14 +20,10 @@
         devShells.default = pkgs.mkShell {
           buildInputs = [ rust ] ++ (with pkgs; [
             pkg-config
-            nixfmt-classic
-            nil
-            shellcheck
-            shfmt
-            nodePackages_latest.bash-language-server
             cargo-expand
             cargo-nextest
             cargo-insta
+            cargo-semver-checks
             nodejs_24
             husky
           ]);
