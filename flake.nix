@@ -42,6 +42,7 @@
               nodePackages_latest.bash-language-server
               cargo-expand
               cargo-nextest
+              cargo-insta
             ]);
         };
       }
