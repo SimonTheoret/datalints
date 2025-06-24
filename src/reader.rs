@@ -113,7 +113,7 @@ impl<P> DatasetReaderBuilder<P>
 where
     P: AsRef<Path>,
 {
-    fn new(path: P) -> Self {
+    pub fn new(path: P) -> Self {
         Self { path, arg: None }
     }
 
@@ -141,7 +141,7 @@ where
         Ok(mmap)
     }
 
-    fn build(self) -> Result<DatasetReaderIter> {
+    pub fn build(self) -> Result<DatasetReaderIter> {
         let path_ref = self.path.as_ref();
         let dataset_type = DatasetType::parse_from_arg_or_path(self.arg.clone(), path_ref)?;
         match dataset_type {
