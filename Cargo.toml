@@ -3,9 +3,6 @@ name = "datalints"
 version = "0.1.0"
 edition = "2024"
 
-[build]
-rustflags = ["-C target-cpu=native -C target-feature=-prefer-256-bit"]
-
 [dependencies]
 ahash = "0.8.11"
 arrow = { version = "55.0.0", features = ["json", "csv"] }
