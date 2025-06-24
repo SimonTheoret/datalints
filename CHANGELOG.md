@@ -1,31 +1,3 @@
-##  (2025-06-24)
-
-* fix: making new and build methods of DatasetReaderBuilder public ([fd21eba](https://github.com/SimonTheoret/datalints/commit/fd21eba))
-* build: added cargo-insta ([bd3bc0b](https://github.com/SimonTheoret/datalints/commit/bd3bc0b))
-* build: removed unused deps ([c503aa8](https://github.com/SimonTheoret/datalints/commit/c503aa8))
-* build: setup for commit linting ([9ca1f8b](https://github.com/SimonTheoret/datalints/commit/9ca1f8b))
-* build: update flake and cargo.toml(lock) ([780ccd5](https://github.com/SimonTheoret/datalints/commit/780ccd5))
-* test: configured crate for integration testing (has both lib and bin) ([cc21b42](https://github.com/SimonTheoret/datalints/commit/cc21b42))
-* docs: added documentation around the reader ([6461498](https://github.com/SimonTheoret/datalints/commit/6461498))
-* refactor(reader): refactor of the reader methods ([97444c1](https://github.com/SimonTheoret/datalints/commit/97444c1))
-* feat: repo init ([363a5af](https://github.com/SimonTheoret/datalints/commit/363a5af))
-* feat(EnumAsFloat): compute the array_len and keep it ([5f2b8a9](https://github.com/SimonTheoret/datalints/commit/5f2b8a9))
-* doc: added diagram ([a0f8efe](https://github.com/SimonTheoret/datalints/commit/a0f8efe))
-* doc: added some documentation for NumberAsStringLinter ([46bcae0](https://github.com/SimonTheoret/datalints/commit/46bcae0))
-* WIP ([d62b71c](https://github.com/SimonTheoret/datalints/commit/d62b71c))
-* WIP ([9f24cac](https://github.com/SimonTheoret/datalints/commit/9f24cac))
-* WIP ([a31c9b7](https://github.com/SimonTheoret/datalints/commit/a31c9b7))
-* WIP ([eda19e9](https://github.com/SimonTheoret/datalints/commit/eda19e9))
-* WIP ([4f8524b](https://github.com/SimonTheoret/datalints/commit/4f8524b))
-* WIP ([f69aacf](https://github.com/SimonTheoret/datalints/commit/f69aacf))
-* WIP ([4455940](https://github.com/SimonTheoret/datalints/commit/4455940))
-* WIP ([f0b0aa7](https://github.com/SimonTheoret/datalints/commit/f0b0aa7))
-* WIP ([78aaa2f](https://github.com/SimonTheoret/datalints/commit/78aaa2f))
-* WIP ([a521d65](https://github.com/SimonTheoret/datalints/commit/a521d65))
-* chore: ignore .envrc ([5979dc0](https://github.com/SimonTheoret/datalints/commit/5979dc0))
-
-
-
 ## 0.2.0 (2025-06-24)
 
 ### Feat
