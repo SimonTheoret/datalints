@@ -3,6 +3,7 @@ use arrow_json::{
     reader::{ReaderBuilder, infer_json_schema_from_seekable},
 };
 
+use arrow_schema::Schema;
 #[cfg(test)]
 use enum_iterator::Sequence;
 
@@ -22,7 +23,7 @@ impl AsRef<[u8]> for BoxedMmap {
         self.0.as_ref()
     }
 }
-// #[clippy]
+
 #[cfg_attr(test, derive(Sequence))]
 #[derive(Debug, Default, derive_more::FromStr, derive_more::Display)]
 pub enum DatasetType {
@@ -114,30 +115,39 @@ where
         Self { path, arg: None }
     }
 
+    fn normalize_schema(schema: Schema) -> Result<Arc<Schema>> {
+        let schema = Arc::new(
+            schema
+                .normalize(".", None)
+                .wrap_err("Could not normalize the schema")?,
+        );
+        Ok(schema)
+    }
+
+    fn build_mmap(path: &Path) -> Result<Box<Mmap>> {
+        let path_ref = path;
+        let file = File::open(path_ref)
+            .wrap_err_with(|| format!("could not open the dataset {:?}", path_ref.to_owned()))?;
+        let mmap = unsafe {
+            Box::new(Mmap::map(&file).wrap_err_with(|| {
+                format!("could not memmap the dataset {:?}", path_ref.to_owned())
+            })?)
+        };
+        Ok(mmap)
+    }
+
     fn build(self) -> Result<DatasetReaderIter> {
-        let path = self.path;
-        let path_ref = path.as_ref();
-        let dataset_type = DatasetType::parse_from_arg_or_path(self.arg, path_ref)?;
+        let path_ref = self.path.as_ref();
+        let dataset_type = DatasetType::parse_from_arg_or_path(self.arg.clone(), path_ref)?;
         match dataset_type {
             DatasetType::Json | DatasetType::Jsonl => {
-                let file = File::open(path_ref).wrap_err_with(|| {
-                    format!("could not open the dataset {:?}", path_ref.to_owned())
-                })?;
-                let mmap = unsafe {
-                    Box::new(Mmap::map(&file).wrap_err_with(|| {
-                        format!("could not memmap the dataset {:?}", path_ref.to_owned())
-                    })?)
-                };
+                let mmap = Self::build_mmap(path_ref)?;
                 let cursor = Cursor::new(BoxedMmap(mmap));
                 let mut reader = BufReader::new(cursor);
                 let schema = infer_json_schema_from_seekable(&mut reader, Some(100))
                     .wrap_err_with(|| "could not infer the schema")?
                     .0;
-                let schema = Arc::new(
-                    schema
-                        .normalize(".", None)
-                        .wrap_err("Could not normalize the schema")?,
-                );
+                let schema = Self::normalize_schema(schema)?;
                 let builder = ReaderBuilder::new(schema);
                 let json_reader = builder
                     .build(reader)

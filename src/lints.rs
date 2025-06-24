@@ -48,7 +48,7 @@ Identify likely outliers and scaling issues in data.
 
 use crate::document::{Document, QueryType, Queryable};
 use arrow::array::Array;
-use std::{ops::Add, sync::Arc};
+use std::sync::Arc;
 
 mod enum_as_float;
 mod number_as_string;
