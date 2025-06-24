@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [build]
-rustflasgs = ["-C target-cpu=native -C target-feature=-prefer-256-bit"]
+rustflags = ["-C target-cpu=native -C target-feature=-prefer-256-bit"]
 
 [dependencies]
 ahash = "0.8.11"
@@ -12,24 +12,20 @@ arrow = { version = "55.0.0", features = ["json", "csv"] }
 arrow-buffer = "55.1.0"
 arrow-json = "55.0.0"
 arrow-schema = "55.1.0"
-compact_str = { version = "0.9.0", features = ["proptest", "serde"] }
-csv = "1.3.1"
+clap = { version = "4.5.40", features = ["derive"] }
 derive_more = { version = "2.0.1", features = ["full"] }
 eyre = "0.6.12"
-flatarray = { version = "1.1.0", features = ["serde"] }
-jiff = { version = "0.2.14", features = ["serde"] }
-log = "0.4.27"
 memmap2 = "0.9.5"
 parameterized = "2.0.0"
 parquet = "55.0.0"
-pretty_assertions = "1.4.1"
 regex = "1.11.1"
 serde = { version = "1.0.219", features = ["derive"] }
-tempfile = "3.20.0"
-thiserror = "2.0.12"
 
 [dev-dependencies]
 enum-iterator = "2.1.0"
+insta = "1.43.1"
+pretty_assertions = "1.4.1"
+
 # We can use (import) the library as datalints
 [lib]
 name = "datalints"
