@@ -6,3 +6,22 @@ repos:
     -   id: commitizen-branch
         stages:
         - pre-push
+-   repo: local
+    hooks:
+      - id: rustfmt
+        name: rustfmt
+        description: Check if all files follow the rustfmt style
+        entry: cargo fmt --all -- --check --color always
+        language: system
+        pass_filenames: false
+        stages:
+        - pre-commit
+      - id: tests
+        name: tests
+        description: Verify all tests pass
+        entry: cargo test
+        language: system
+        pass_filenames: false
+        stages:
+        - pre-commit
+
