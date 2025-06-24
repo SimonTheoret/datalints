@@ -26,7 +26,10 @@ impl From<NormalizedRecordBatch> for Document {
                 DataType::Float64 => float_type_columns.push(idx),
                 DataType::Decimal128(_, _) => float_type_columns.push(idx),
                 DataType::Decimal256(_, _) => float_type_columns.push(idx),
-                _ => todo!(),
+                _ => {
+                    println!("{:?}", field.data_type());
+                    todo!()
+                }
             }
         }
         Self {
