@@ -28,6 +28,8 @@ impl NumberAsStringLinter {
     const RE: &'static str = r"^[0-9\.\,]+$";
     const QUERY_TYPE: QueryType = QueryType::StringArray;
 
+    /// Inner function of the `lint` method, from the `StreamingLinter` trait.
+    /// It returns the lints.
     fn lint_inner(&mut self, doc: &Document) -> Option<Lints> {
         let arrays = doc.query(NumberAsStringLinter::QUERY_TYPE);
         let mut lints = Lints::default();
@@ -58,6 +60,7 @@ impl NumberAsStringLinter {
         if lints.is_empty() { None } else { Some(lints) }
     }
 
+    /// This function computes the matches creates the lint associated with the matching example.
     fn compute_matches_and_add_to_lints<'a, A: StringArrayType<'a>>(
         &'a self,
         array: &'a A,
