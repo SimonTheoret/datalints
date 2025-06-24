@@ -1,11 +1,9 @@
-mod document;
-mod lints;
-mod pipeline;
-mod reader;
 
-#[cfg(test)]
-mod tests_common;
+use clap::Parser;
+use datalints::{inner_main, Args};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    Ok(())
+    let args = Args::parse();
+    inner_main(args)
 }
+

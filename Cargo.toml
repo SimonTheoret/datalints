@@ -30,3 +30,13 @@ thiserror = "2.0.12"
 
 [dev-dependencies]
 enum-iterator = "2.1.0"
+# We can use (import) the library as datalints
+[lib]
+name = "datalints"
+path = "src/lib.rs"
+
+[[bin]]
+name = "datalinter"
+path = "src/main.rs"
+
+
