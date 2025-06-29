@@ -33,12 +33,12 @@ impl NumberAsStringLinter {
     fn lint_inner(&mut self, doc: &Document) -> Option<Lints> {
         let arrays = doc.query(NumberAsStringLinter::QUERY_TYPE);
         let mut lints = Lints::default();
-        for (idx_field, arr) in arrays.iter().enumerate() {
+        for (idx_field, arr) in arrays.iter() {
             if lints.len() >= self.max_number_of_positives {
                 break;
             };
 
-            let field_name = doc.field_name_by_idx(idx_field);
+            let field_name = doc.field_name_by_idx(*idx_field);
             let array_len = arr.len();
             match arr.data_type() {
                 DataType::Utf8 => {
@@ -95,6 +95,7 @@ mod test {
     use crate::tests_common::{
         setup_document_with_lots_of_numbers_and_string, setup_document_with_some_numbers_and_string,
     };
+    use pretty_assertions::assert_eq;
 
     use super::NumberAsStringLinter;
 

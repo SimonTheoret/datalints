@@ -168,8 +168,8 @@ impl AggregateLinter for EnumAsFloatLinter {
             return;
         }
         let arrays = self.get_arrays(doc);
-        for (idx_field, arr) in arrays.iter().enumerate() {
-            let field_name = doc.field_name_by_idx(idx_field);
+        for (idx_field, arr) in arrays.iter() {
+            let field_name = doc.field_name_by_idx(*idx_field);
             if self.column_is_completed(field_name) {
                 continue;
             }

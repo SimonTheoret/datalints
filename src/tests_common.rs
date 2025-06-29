@@ -53,6 +53,17 @@ pub fn setup_document_with_lots_of_numbers_and_string() -> Document {
     Document::from(NormalizedRecordBatch(batch))
 }
 
+pub fn setup_document_with_numbers_and_long_strings() -> Document {
+    let batch = record_batch!(
+        ("a", Utf8, ["This is a very long string, manually written by me, although it could be a bit longerThis is a very long string, manually written by me, although it could be a bit longer.This is a very long string, manually written by me, although it could be a bit longer.This is a very long string, manually written by me, although it could be a bit longer.   . ", "This is another loong string, although a bit shorter.This is another loong string, although a bit shorter.This is another loong string, although a bit shorter.This is another loong string, although a bit shorter.", "This is the final long string.This is the final long string.This is the final long string.This is the final long string.", "This is a smaller one", "smoll", "VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG VERY LONG."]),
+
+        ("b", Utf8, [Some("alpha"), None, Some("gamma")]),
+        ("num", Utf8, [Some("1278"), None, Some("718872")])
+    )
+    .unwrap();
+    Document::from(NormalizedRecordBatch(batch))
+}
+
 pub fn setup_document_with_no_string_content() -> Document {
     let batch = record_batch!(
         ("a", Int32, [1, 2, 3]),

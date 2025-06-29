@@ -46,19 +46,20 @@ Identify likely outliers and scaling issues in data.
 
  */
 
-use crate::document::{Document, QueryType, Queryable};
+use crate::document::{Document, FieldIdx, QueryType, Queryable};
 use arrow::array::Array;
 use std::sync::Arc;
 
 mod enum_as_float;
 mod number_as_string;
+mod tokenizable_string;
 
 pub trait StreamingLinter {
     const QUERY_TYPE: QueryType = QueryType::StringArray;
 
     fn lint(&mut self, doc: &Document) -> Option<Lints>;
 
-    fn get_arrays<'a>(&self, doc: &'a Document) -> Vec<&'a Arc<dyn Array>> {
+    fn get_arrays<'a>(&self, doc: &'a Document) -> Vec<(FieldIdx, &'a Arc<dyn Array>)> {
         doc.query(Self::QUERY_TYPE)
     }
 }
@@ -70,7 +71,7 @@ pub trait AggregateLinter {
 
     fn lint(self) -> Option<Lints>;
 
-    fn get_arrays<'a>(&self, doc: &'a Document) -> Vec<&'a Arc<dyn Array>> {
+    fn get_arrays<'a>(&self, doc: &'a Document) -> Vec<(FieldIdx, &'a Arc<dyn Array>)> {
         doc.query(Self::QUERY_TYPE)
     }
 }

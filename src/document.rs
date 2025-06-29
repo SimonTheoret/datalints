@@ -54,22 +54,24 @@ pub enum QueryType {
     FloatArray,
 }
 
+pub type FieldIdx = usize;
+
 pub trait Queryable {
-    fn query(&self, query_type: QueryType) -> Vec<&Arc<dyn Array>>;
+    fn query(&self, query_type: QueryType) -> Vec<(FieldIdx, &Arc<dyn Array>)>;
 }
 
 impl Queryable for Document {
-    fn query(&self, query_type: QueryType) -> Vec<&Arc<dyn Array>> {
+    fn query(&self, query_type: QueryType) -> Vec<(FieldIdx, &Arc<dyn Array>)> {
         match query_type {
             QueryType::StringArray => self
                 .string_type_columns
                 .iter()
-                .map(|i| self.array.column(*i))
+                .map(|i| (*i, self.array.column(*i)))
                 .collect(),
             QueryType::FloatArray => self
                 .float_type_columns
                 .iter()
-                .map(|i| self.array.column(*i))
+                .map(|i| (*i, self.array.column(*i)))
                 .collect(),
         }
     }
@@ -92,7 +94,7 @@ mod test {
     fn test_queryable_for_document() {
         let doc = setup_document();
         let arrays = doc.query(QueryType::StringArray);
-        for arr in arrays.into_iter() {
+        for (_idx, arr) in arrays.into_iter() {
             let array_ref = arr.as_ref().as_any();
             let is_string_type = array_ref.is::<StringArray>()
                 || array_ref.is::<LargeStringArray>()
